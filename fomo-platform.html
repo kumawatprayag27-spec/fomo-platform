@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>FOMO Platform — AI Business Suite</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#06030f;--s1:#0f0920;--s2:#160b2a;--s3:#1e1035;
+  --p:#9b30ff;--p2:#b44fff;--p3:#d080ff;
+  --green:#22c55e;--gold:#f59e0b;--red:#ef4444;
+  --text:#f0eaff;--muted:rgba(240,234,255,0.45);
+  --border:rgba(155,48,255,0.18);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+.orb{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(100px);}
+.orb.a{width:600px;height:600px;background:rgba(155,48,255,0.09);top:-150px;left:-150px;}
+.orb.b{width:500px;height:500px;background:rgba(180,79,255,0.07);bottom:-100px;right:-100px;}
+.page{display:none;position:relative;z-index:1;min-height:100vh;}
+.page.active{display:flex;flex-direction:column;}
+
+/* TOPBAR */
+.topbar{padding:16px 24px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);flex-shrink:0;background:rgba(6,3,15,0.9);backdrop-filter:blur(20px);position:sticky;top:0;z-index:50;}
+.logo{font-family:'Syne',sans-serif;font-size:18px;font-weight:900;background:linear-gradient(135deg,#fff 20%,var(--p2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.tbtn{background:rgba(155,48,255,0.12);border:1px solid rgba(155,48,255,0.3);border-radius:20px;padding:7px 16px;font-size:12px;color:var(--p2);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;}
+.tbtn:hover{background:rgba(155,48,255,0.22);}
+.tbtn.solid{background:linear-gradient(135deg,var(--p),var(--p2));color:#fff;border:none;}
+
+/* COMMON */
+.scroll-area{flex:1;overflow-y:auto;}
+.scroll-area::-webkit-scrollbar{width:3px;}
+.scroll-area::-webkit-scrollbar-thumb{background:rgba(155,48,255,0.3);border-radius:4px;}
+.section-tag{font-size:10px;color:var(--p);letter-spacing:3px;text-transform:uppercase;display:block;margin-bottom:10px;}
+input,textarea,select{background:rgba(155,48,255,0.06);border:1px solid rgba(155,48,255,0.2);border-radius:10px;padding:10px 14px;font-size:13px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;transition:border-color 0.2s;width:100%;}
+input:focus,textarea:focus,select:focus{border-color:var(--p);}
+input::placeholder,textarea::placeholder{color:var(--muted);}
+select option{background:#1a0a2e;}
+.btn{border:none;border-radius:12px;padding:12px 22px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;transition:all 0.2s;letter-spacing:0.5px;}
+.btn.primary{background:linear-gradient(135deg,var(--p),var(--p2));color:#fff;box-shadow:0 0 20px rgba(155,48,255,0.3);}
+.btn.primary:hover{transform:scale(1.03);box-shadow:0 0 30px rgba(155,48,255,0.5);}
+.btn.ghost{background:rgba(155,48,255,0.1);border:1px solid rgba(155,48,255,0.3);color:var(--p2);}
+.btn.ghost:hover{background:rgba(155,48,255,0.2);}
+.btn.danger{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:#ef4444;}
+.btn.green{background:linear-gradient(135deg,#16a34a,#22c55e);color:#fff;}
+.card{background:var(--s1);border:1px solid var(--border);border-radius:16px;padding:20px;}
+.badge{font-size:10px;letter-spacing:2px;border-radius:20px;padding:3px 10px;display:inline-block;}
+.badge.purple{background:rgba(155,48,255,0.15);border:1px solid rgba(155,48,255,0.3);color:var(--p2);}
+.badge.green{background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);color:var(--green);}
+.badge.gold{background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);color:var(--gold);}
+
+/* ══════════════════════
+   LANDING PAGE
+══════════════════════ */
+#landingPage .scroll-area{padding-bottom:60px;}
+.hero{text-align:center;padding:70px 24px 50px;max-width:820px;margin:0 auto;}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(155,48,255,0.1);border:1px solid rgba(155,48,255,0.3);border-radius:30px;padding:6px 18px;font-size:11px;color:var(--p2);letter-spacing:2px;margin-bottom:26px;}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:pulse 2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+.hero h1{font-family:'Syne',sans-serif;font-size:clamp(32px,5.5vw,62px);font-weight:900;line-height:1.05;letter-spacing:-2px;margin-bottom:18px;}
+.grad{background:linear-gradient(135deg,var(--p) 0%,var(--p2) 50%,var(--p3) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero p{font-size:16px;color:var(--muted);line-height:1.7;max-width:580px;margin:0 auto 36px;}
+.hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+
+.stats-row{display:flex;justify-content:center;gap:40px;flex-wrap:wrap;padding:0 24px 50px;max-width:700px;margin:0 auto;}
+.stat{text-align:center;}
+.stat-n{font-family:'Syne',sans-serif;font-size:30px;font-weight:900;color:var(--p2);}
+.stat-l{font-size:11px;color:var(--muted);letter-spacing:1px;margin-top:2px;}
+
+/* FEATURES GRID */
+.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:0 24px 60px;max-width:1000px;margin:0 auto;}
+@media(max-width:700px){.features-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:450px){.features-grid{grid-template-columns:1fr;}}
+.feat-card{background:var(--s1);border:1px solid var(--border);border-radius:16px;padding:20px;transition:transform 0.2s,border-color 0.2s;}
+.feat-card:hover{transform:translateY(-4px);border-color:rgba(155,48,255,0.35);}
+.feat-icon{font-size:28px;margin-bottom:12px;}
+.feat-card h3{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;margin-bottom:6px;}
+.feat-card p{font-size:12px;color:var(--muted);line-height:1.5;}
+
+/* PRICING */
+.pricing-wrap{padding:0 24px 80px;max-width:1060px;margin:0 auto;}
+.plans-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+@media(max-width:800px){.plans-grid{grid-template-columns:1fr;max-width:400px;margin:0 auto;}}
+.plan{background:var(--s1);border:1px solid var(--border);border-radius:22px;padding:26px 22px;display:flex;flex-direction:column;transition:all 0.3s;position:relative;overflow:hidden;}
+.plan:hover{transform:translateY(-5px);box-shadow:0 20px 50px rgba(155,48,255,0.15);}
+.plan.hot{border-color:var(--p);box-shadow:0 0 30px rgba(155,48,255,0.15);}
+.plan.hot::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--p),var(--p2),transparent);}
+.plan.ent{border-color:rgba(245,158,11,0.35);}
+.plan.ent::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+.pop-tag{position:absolute;top:16px;right:16px;background:linear-gradient(135deg,var(--p),var(--p2));font-size:9px;color:#fff;border-radius:20px;padding:3px 10px;font-weight:700;}
+.plan-name{font-family:'Syne',sans-serif;font-size:19px;font-weight:900;margin-bottom:4px;}
+.plan-sub{font-size:12px;color:var(--muted);margin-bottom:18px;line-height:1.4;}
+.plan-price{font-family:'Syne',sans-serif;font-size:36px;font-weight:900;background:linear-gradient(135deg,#fff,var(--p2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.plan-save{font-size:11px;color:var(--green);margin-bottom:14px;}
+.vline{font-size:13px;color:var(--p2);font-style:italic;background:rgba(155,48,255,0.08);border-left:2px solid var(--p);padding:8px 12px;border-radius:0 8px 8px 0;margin-bottom:16px;line-height:1.4;}
+.plan.ent .vline{border-left-color:var(--gold);color:var(--gold);}
+.divider{height:1px;background:var(--border);margin:14px 0;}
+.feats{list-style:none;display:flex;flex-direction:column;gap:7px;flex:1;margin-bottom:18px;}
+.feats li{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--muted);line-height:1.4;}
+.fchk{width:16px;height:16px;border-radius:50%;background:rgba(155,48,255,0.15);display:flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0;margin-top:1px;color:var(--p2);}
+.plan.ent .fchk{background:rgba(245,158,11,0.1);color:var(--gold);}
+.plan-btn{width:100%;padding:13px;border:none;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;transition:all 0.2s;letter-spacing:0.5px;}
+.plan-btn.s{background:rgba(155,48,255,0.12);border:1px solid rgba(155,48,255,0.3);color:var(--p2);}
+.plan-btn.s:hover{background:rgba(155,48,255,0.22);}
+.plan-btn.p{background:linear-gradient(135deg,var(--p),var(--p2));color:#fff;box-shadow:0 0 20px rgba(155,48,255,0.3);}
+.plan-btn.p:hover{transform:scale(1.02);}
+.plan-btn.e{background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);color:var(--gold);}
+.plan-btn.e:hover{background:rgba(245,158,11,0.2);}
+
+/* ══════════════════════
+   PAYMENT PAGE
+══════════════════════ */
+#paymentPage .scroll-area{display:flex;align-items:center;justify-content:center;padding:24px;}
+.pay-box{width:100%;max-width:440px;}
+.pay-box h2{font-family:'Syne',sans-serif;font-size:26px;font-weight:900;margin-bottom:6px;text-align:center;}
+.pay-box p{font-size:13px;color:var(--muted);text-align:center;margin-bottom:24px;}
+.amount-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(155,48,255,0.1);border:1px solid rgba(155,48,255,0.3);border-radius:30px;padding:8px 24px;margin-bottom:24px;}
+.qr-box{background:var(--s1);border:1px solid var(--border);border-radius:20px;padding:24px;margin-bottom:16px;text-align:center;}
+.qr-img-wrap{width:220px;height:220px;margin:0 auto 16px;background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 0 30px rgba(155,48,255,0.2);display:flex;align-items:center;justify-content:center;}
+.qr-img-wrap img{width:100%;height:100%;object-fit:cover;}
+.upi-id-box{display:inline-block;font-family:monospace;font-size:14px;color:var(--p2);background:rgba(155,48,255,0.08);border:1px solid rgba(155,48,255,0.2);border-radius:8px;padding:7px 16px;cursor:pointer;transition:all 0.2s;margin-bottom:6px;}
+.upi-id-box:hover{background:rgba(155,48,255,0.18);}
+.how-steps{background:var(--s1);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:14px;}
+.how-step{display:flex;gap:10px;align-items:flex-start;margin-bottom:10px;}
+.how-step:last-child{margin-bottom:0;}
+.step-num{width:22px;height:22px;border-radius:50%;background:rgba(155,48,255,0.15);border:1px solid rgba(155,48,255,0.3);display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;color:var(--p2);}
+.wa-btn{display:flex;align-items:center;justify-content:center;gap:8px;background:rgba(37,211,102,0.1);border:1px solid rgba(37,211,102,0.3);border-radius:12px;padding:13px;text-decoration:none;color:#25d366;font-size:14px;font-weight:600;margin-bottom:12px;transition:all 0.2s;}
+.wa-btn:hover{background:rgba(37,211,102,0.18);}
+.paid-btn{width:100%;padding:14px;background:linear-gradient(135deg,var(--p),var(--p2));border:none;border-radius:12px;font-size:14px;font-weight:700;color:#fff;font-family:'Syne',sans-serif;cursor:pointer;box-shadow:0 0 25px rgba(155,48,255,0.35);}
+
+/* ══════════════════════
+   DASHBOARD
+══════════════════════ */
+#dashPage{height:100dvh;}
+.dash-layout{display:flex;flex:1;overflow:hidden;}
+.dash-sidebar{width:220px;background:var(--s1);border-right:1px solid var(--border);padding:20px 0;flex-shrink:0;overflow-y:auto;}
+@media(max-width:700px){.dash-sidebar{display:none;}}
+.dash-content{flex:1;overflow-y:auto;padding:24px;}
+.dash-content::-webkit-scrollbar{width:3px;}
+.dash-content::-webkit-scrollbar-thumb{background:rgba(155,48,255,0.3);}
+.side-label{font-size:9px;color:var(--muted);letter-spacing:3px;padding:0 20px 8px;text-transform:uppercase;}
+.side-item{display:flex;align-items:center;gap:10px;padding:10px 20px;cursor:pointer;font-size:13px;color:var(--muted);transition:all 0.2s;border-left:2px solid transparent;}
+.side-item:hover,.side-item.active{color:var(--text);background:rgba(155,48,255,0.08);border-left-color:var(--p);}
+.side-item span{font-size:16px;}
+.dash-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
+@media(max-width:900px){.dash-grid{grid-template-columns:repeat(2,1fr);}}
+.dash-stat{background:var(--s1);border:1px solid var(--border);border-radius:14px;padding:18px;}
+.dash-stat .ds-icon{font-size:24px;margin-bottom:8px;}
+.dash-stat .ds-num{font-family:'Syne',sans-serif;font-size:26px;font-weight:900;color:var(--p2);}
+.dash-stat .ds-label{font-size:11px;color:var(--muted);margin-top:2px;}
+
+/* PRODUCT FORM */
+.prod-form{background:var(--s1);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:24px;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media(max-width:600px){.form-grid{grid-template-columns:1fr;}}
+.form-full{grid-column:1/-1;}
+.field{display:flex;flex-direction:column;gap:6px;}
+.field label{font-size:11px;color:var(--muted);letter-spacing:0.5px;}
+.img-preview{width:80px;height:80px;border-radius:10px;object-fit:cover;border:1px solid var(--border);}
+
+/* PRODUCT GRID */
+.prod-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;}
+.prod-card{background:var(--s1);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:all 0.25s;}
+.prod-card:hover{transform:translateY(-4px);border-color:rgba(155,48,255,0.35);}
+.prod-img{width:100%;height:140px;object-fit:cover;background:var(--s2);}
+.prod-img-placeholder{width:100%;height:140px;background:linear-gradient(135deg,var(--s2),var(--s3));display:flex;align-items:center;justify-content:center;font-size:36px;}
+.prod-info{padding:14px;}
+.prod-name{font-family:'Syne',sans-serif;font-size:14px;font-weight:800;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.prod-cat{font-size:10px;color:var(--p2);letter-spacing:1px;margin-bottom:6px;}
+.prod-price{font-family:'Syne',sans-serif;font-size:17px;font-weight:900;color:var(--p2);}
+.prod-actions{display:flex;gap:6px;margin-top:10px;}
+.prod-actions button{flex:1;padding:6px;border-radius:8px;font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif;border:none;}
+
+/* ══════════════════════
+   STORE PAGE
+══════════════════════ */
+#storePage .scroll-area{padding:0;}
+.store-hero{background:linear-gradient(135deg,var(--s1),var(--s2));padding:30px 24px;border-bottom:1px solid var(--border);text-align:center;}
+.store-name{font-family:'Syne',sans-serif;font-size:28px;font-weight:900;margin-bottom:4px;}
+.store-type{font-size:12px;color:var(--muted);letter-spacing:2px;}
+.store-cats{display:flex;gap:8px;overflow-x:auto;padding:14px 24px;border-bottom:1px solid var(--border);}
+.store-cats::-webkit-scrollbar{display:none;}
+.cat-pill{padding:6px 16px;border-radius:20px;font-size:12px;cursor:pointer;white-space:nowrap;transition:all 0.2s;background:rgba(155,48,255,0.08);border:1px solid rgba(155,48,255,0.2);color:var(--muted);}
+.cat-pill.active{background:rgba(155,48,255,0.2);border-color:var(--p);color:var(--p2);}
+.store-products{padding:20px 24px;}
+.store-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px;}
+.store-card{background:var(--s1);border:1px solid var(--border);border-radius:14px;overflow:hidden;cursor:pointer;transition:all 0.25s;}
+.store-card:hover{transform:translateY(-4px);border-color:rgba(155,48,255,0.35);}
+.store-card-img{width:100%;height:130px;object-fit:cover;background:var(--s2);}
+.store-card-img-ph{width:100%;height:130px;background:linear-gradient(135deg,var(--s2),var(--s3));display:flex;align-items:center;justify-content:center;font-size:32px;}
+.store-card-info{padding:12px;}
+.store-card-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:800;margin-bottom:2px;}
+.store-card-cat{font-size:10px;color:var(--p2);letter-spacing:1px;margin-bottom:4px;}
+.store-card-price{font-family:'Syne',sans-serif;font-size:15px;font-weight:900;color:var(--p2);}
+
+/* CART BADGE */
+.cart-btn{position:relative;}
+.cart-count{position:absolute;top:-6px;right:-6px;width:18px;height:18px;border-radius:50%;background:var(--p);font-size:10px;display:flex;align-items:center;justify-content:center;font-weight:700;}
+
+/* ══════════════════════
+   PRODUCT DETAIL PAGE
+══════════════════════ */
+#productPage .scroll-area{padding:0;}
+.product-hero{display:flex;gap:24px;padding:24px;border-bottom:1px solid var(--border);}
+@media(max-width:650px){.product-hero{flex-direction:column;}}
+.product-img-box{width:280px;flex-shrink:0;border-radius:16px;overflow:hidden;background:var(--s2);aspect-ratio:1;}
+@media(max-width:650px){.product-img-box{width:100%;}}
+.product-img-box img{width:100%;height:100%;object-fit:cover;}
+.product-img-ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:64px;}
+.product-details{flex:1;}
+.product-cat{font-size:11px;color:var(--p2);letter-spacing:2px;margin-bottom:8px;}
+.product-name{font-family:'Syne',sans-serif;font-size:clamp(20px,3vw,32px);font-weight:900;margin-bottom:10px;line-height:1.1;}
+.product-price{font-family:'Syne',sans-serif;font-size:28px;font-weight:900;color:var(--p2);margin-bottom:12px;}
+.product-desc{font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:20px;}
+.product-btns{display:flex;flex-direction:column;gap:10px;}
+.btn-buy{padding:14px;background:linear-gradient(135deg,var(--p),var(--p2));border:none;border-radius:12px;font-size:14px;font-weight:700;color:#fff;cursor:pointer;font-family:'Syne',sans-serif;transition:all 0.2s;}
+.btn-buy:hover{transform:scale(1.02);}
+.btn-cart{padding:13px;background:rgba(155,48,255,0.1);border:1px solid rgba(155,48,255,0.3);border-radius:12px;font-size:14px;font-weight:600;color:var(--p2);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;}
+.btn-cart:hover{background:rgba(155,48,255,0.2);}
+.btn-ai{padding:13px;background:linear-gradient(135deg,rgba(155,48,255,0.15),rgba(180,79,255,0.1));border:1px solid rgba(155,48,255,0.4);border-radius:12px;font-size:14px;font-weight:600;color:var(--p3);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.btn-ai:hover{background:rgba(155,48,255,0.2);}
+
+/* AI ASSISTANT PANEL */
+.ai-panel{margin:0 24px 24px;background:var(--s1);border:1px solid var(--border);border-radius:16px;overflow:hidden;display:none;}
+.ai-panel.open{display:flex;flex-direction:column;}
+.ai-panel-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.ai-panel-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:800;display:flex;align-items:center;gap:8px;}
+.ai-msgs{height:280px;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;}
+.ai-msgs::-webkit-scrollbar{width:3px;}
+.ai-msgs::-webkit-scrollbar-thumb{background:rgba(155,48,255,0.3);}
+.ai-msg{display:flex;gap:8px;animation:msgIn 0.3s ease forwards;opacity:0;transform:translateY(4px);}
+.ai-msg.user{flex-direction:row-reverse;}
+@keyframes msgIn{to{opacity:1;transform:translateY(0)}}
+.ai-av{width:26px;height:26px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;margin-top:2px;}
+.ai-msg.ai .ai-av{background:linear-gradient(135deg,var(--p),var(--p2));}
+.ai-msg.user .ai-av{background:var(--s2);border:1px solid var(--border);}
+.ai-bubble{max-width:80%;padding:9px 13px;border-radius:14px;font-size:13px;line-height:1.6;}
+.ai-msg.ai .ai-bubble{background:var(--s2);border:1px solid var(--border);border-top-left-radius:4px;}
+.ai-msg.user .ai-bubble{background:rgba(155,48,255,0.15);border:1px solid rgba(155,48,255,0.2);border-top-right-radius:4px;}
+.ai-input-row{display:flex;gap:8px;padding:12px;border-top:1px solid var(--border);}
+.ai-input{flex:1;background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:9px 12px;font-size:13px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;}
+.ai-input:focus{border-color:rgba(155,48,255,0.5);}
+.ai-send{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--p),var(--p2));border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.typing-dots{display:flex;gap:4px;padding:2px 0;}
+.typing-dots span{width:6px;height:6px;border-radius:50%;background:var(--p);animation:bounce 1.2s ease-in-out infinite;}
+.typing-dots span:nth-child(2){animation-delay:0.2s;}
+.typing-dots span:nth-child(3){animation-delay:0.4s;}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+
+/* ══════════════════════
+   CART PAGE
+══════════════════════ */
+#cartPage .scroll-area{padding:20px 24px;}
+.cart-items{display:flex;flex-direction:column;gap:12px;margin-bottom:20px;}
+.cart-item{background:var(--s1);border:1px solid var(--border);border-radius:12px;padding:14px;display:flex;gap:14px;align-items:center;}
+.ci-img{width:60px;height:60px;border-radius:8px;object-fit:cover;background:var(--s2);flex-shrink:0;}
+.ci-img-ph{width:60px;height:60px;border-radius:8px;background:var(--s2);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
+.ci-info{flex:1;min-width:0;}
+.ci-name{font-family:'Syne',sans-serif;font-size:14px;font-weight:800;margin-bottom:2px;}
+.ci-price{font-size:13px;color:var(--p2);}
+.ci-qty{display:flex;align-items:center;gap:8px;margin-top:6px;}
+.qty-btn{width:26px;height:26px;border-radius:6px;background:rgba(155,48,255,0.1);border:1px solid rgba(155,48,255,0.2);color:var(--text);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;}
+.qty-val{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;min-width:20px;text-align:center;}
+.ci-del{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);border-radius:8px;padding:6px 10px;color:#ef4444;cursor:pointer;font-size:11px;}
+.order-summary{background:var(--s1);border:1px solid var(--border);border-radius:14px;padding:20px;}
+.summary-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:14px;}
+.summary-row:last-child{border-bottom:none;font-family:'Syne',sans-serif;font-size:16px;font-weight:900;}
+.summary-row.total{color:var(--p2);}
+
+/* ORDERS PAGE */
+.orders-list{display:flex;flex-direction:column;gap:12px;}
+.order-card{background:var(--s1);border:1px solid var(--border);border-radius:12px;padding:16px;}
+.order-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.order-id{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;}
+.order-items-preview{font-size:12px;color:var(--muted);}
+.order-total{font-family:'Syne',sans-serif;font-size:15px;font-weight:900;color:var(--p2);}
+
+/* SECTION HEADER */
+.sec-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+.sec-header h2{font-family:'Syne',sans-serif;font-size:20px;font-weight:900;}
+
+/* TOAST */
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);background:linear-gradient(135deg,var(--p),var(--p2));color:#fff;padding:12px 24px;border-radius:30px;font-size:13px;font-weight:600;z-index:999;transition:transform 0.3s ease;pointer-events:none;}
+#toast.show{transform:translateX(-50%) translateY(0);}
+
+/* SETUP PAGE */
+#setupPage{align-items:center;}
+#setupPage .scroll-area{width:100%;display:flex;justify-content:center;padding:40px 16px;}
+.setup-box{width:100%;max-width:580px;}
+</style>
+</head>
+<body>
+<div class="orb a"></div>
+<div class="orb b"></div>
+<div id="toast"></div>
+
+<!-- ══════════════════════════
+     LANDING PAGE
+══════════════════════════ -->
+<div class="page active" id="landingPage">
+  <div class="topbar">
+    <div class="logo">FOMO Platform</div>
+    <div style="display:flex;gap:8px;">
+      <button class="tbtn" onclick="showPage('dashPage');initDash()">Dashboard</button>
+      <button class="tbtn solid" onclick="scrollTo('plans')">Get Started</button>
+    </div>
+  </div>
+  <div class="scroll-area">
+
+    <!-- HERO -->
+    <div class="hero">
+      <div class="hero-badge"><span class="live-dot"></span> AI-Powered Business Platform</div>
+      <h1>The Smartest Way to<br/><span class="grad">Run Your Business</span></h1>
+      <p>Hotels, restaurants, cafés, grocery stores — get your own AI-powered store with smart ordering, product AI assistant, and auto-payment QR in minutes.</p>
+      <div class="hero-btns">
+        <button class="btn primary" onclick="scrollTo('plans')">See Plans ↓</button>
+        <button class="btn ghost" onclick="showPage('dashPage');initDash()">Try Dashboard</button>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-row">
+      <div class="stat"><div class="stat-n">24/7</div><div class="stat-l">AI Online</div></div>
+      <div class="stat"><div class="stat-n">2 min</div><div class="stat-l">Setup</div></div>
+      <div class="stat"><div class="stat-n">₹0</div><div class="stat-l">Staff Cost</div></div>
+      <div class="stat"><div class="stat-n">∞</div><div class="stat-l">Products</div></div>
+    </div>
+
+    <!-- FEATURES -->
+    <div style="text-align:center;padding:0 24px 32px;">
+      <span class="section-tag">PLATFORM FEATURES</span>
+      <h2 style="font-family:'Syne',sans-serif;font-size:clamp(22px,4vw,34px);font-weight:900;letter-spacing:-1px;">Everything Your Business Needs</h2>
+    </div>
+    <div class="features-grid">
+      <div class="feat-card"><div class="feat-icon">🤖</div><h3>AI Product Assistant</h3><p>Customers ask anything about any product — AI answers with full product knowledge</p></div>
+      <div class="feat-card"><div class="feat-icon">📱</div><h3>Smart QR Payments</h3><p>Auto-fills exact subscription amount in UPI — no manual typing needed</p></div>
+      <div class="feat-card"><div class="feat-icon">🏪</div><h3>Product Dashboard</h3><p>Add unlimited products with images, prices, categories, descriptions</p></div>
+      <div class="feat-card"><div class="feat-icon">🛒</div><h3>Smart Cart & Orders</h3><p>Customers order directly — smart cart, billing, and real-time tracking</p></div>
+      <div class="feat-card"><div class="feat-icon">📊</div><h3>Business Analytics</h3><p>Track orders, revenue, popular products and customer insights</p></div>
+      <div class="feat-card"><div class="feat-icon">🎨</div><h3>Branded Store</h3><p>Your own branded store page — your name, your colors, your business</p></div>
+    </div>
+
+    <!-- PRICING -->
+    <div id="plans" style="scroll-margin-top:70px;">
+      <div style="text-align:center;padding:0 24px 32px;">
+        <span class="section-tag">PRICING PLANS</span>
+        <h2 style="font-family:'Syne',sans-serif;font-size:clamp(22px,4vw,34px);font-weight:900;letter-spacing:-1px;">Choose Your Plan</h2>
+        <p style="font-size:14px;color:var(--muted);margin-top:8px;">Every plan includes your own AI-powered store and product AI assistant</p>
+      </div>
+      <div class="pricing-wrap">
+        <div class="plans-grid">
+
+          <div class="plan">
+            <div class="badge purple" style="margin-bottom:12px;">STARTER</div>
+            <div class="plan-name">AI Receptionist</div>
+            <div class="plan-sub">Perfect for small shops, cafes, salons. Never miss a customer again.</div>
+            <div class="plan-price">₹1,999<span style="font-size:14px;font-weight:400;color:var(--muted)">/mo</span></div>
+            <div class="plan-save">Save ₹10,000+/month vs hiring staff</div>
+            <div class="vline">"Never lose a customer message again."</div>
+            <div class="divider"></div>
+            <ul class="feats">
+              <li><div class="fchk">✓</div>Online store with unlimited products</li>
+              <li><div class="fchk">✓</div>AI product assistant per product</li>
+              <li><div class="fchk">✓</div>Smart cart and ordering system</li>
+              <li><div class="fchk">✓</div>Answer customer questions 24/7</li>
+              <li><div class="fchk">✓</div>Voice enabled AI</li>
+              <li><div class="fchk">✓</div>Branded with your business name</li>
+            </ul>
+            <button class="plan-btn s" onclick="showPaymentPage('AI Receptionist','1999','month')">Get Started →</button>
+          </div>
+
+          <div class="plan hot">
+            <div class="pop-tag">POPULAR</div>
+            <div class="badge purple" style="margin-bottom:12px;">BEST VALUE</div>
+            <div class="plan-name">AI Sales Employee</div>
+            <div class="plan-sub">Converts visitors into customers. Sells even while you sleep.</div>
+            <div class="plan-price">₹14,999<span style="font-size:14px;font-weight:400;color:var(--muted)">/mo</span></div>
+            <div class="plan-save">Replaces 2-3 sales staff. Saves ₹50,000+/month</div>
+            <div class="vline">"An AI employee that sells even while you sleep."</div>
+            <div class="divider"></div>
+            <ul class="feats">
+              <li><div class="fchk">✓</div>Everything in Starter</li>
+              <li><div class="fchk">✓</div>Auto follow-up with leads</li>
+              <li><div class="fchk">✓</div>Smart upselling & cross-selling</li>
+              <li><div class="fchk">✓</div>Customer re-engagement</li>
+              <li><div class="fchk">✓</div>Sales analytics & reports</li>
+              <li><div class="fchk">✓</div>Multi-platform support</li>
+            </ul>
+            <button class="plan-btn p" onclick="showPaymentPage('AI Sales Employee','14999','month')">Get This Plan →</button>
+          </div>
+
+          <div class="plan ent">
+            <div class="badge gold" style="margin-bottom:12px;">ENTERPRISE</div>
+            <div class="plan-name">AI Business OS</div>
+            <div class="plan-sub">Full business operating system. Realistically save ₹5-10 Lakh/year.</div>
+            <div class="plan-price" style="background:linear-gradient(135deg,#fff,var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">₹24,999<span style="font-size:14px;font-weight:400;color:var(--muted)">/yr</span></div>
+            <div class="plan-save" style="color:var(--gold);">Save ₹5-10 Lakh/year realistically</div>
+            <div class="vline" style="border-left-color:var(--gold);color:var(--gold);">"Cut costs. Scale without limits."</div>
+            <div class="divider" style="background:rgba(245,158,11,0.15);"></div>
+            <ul class="feats">
+              <li><div class="fchk" style="background:rgba(245,158,11,0.1);color:var(--gold)">✓</div>Multiple AI employees</li>
+              <li><div class="fchk" style="background:rgba(245,158,11,0.1);color:var(--gold)">✓</div>CRM & billing integration</li>
+              <li><div class="fchk" style="background:rgba(245,158,11,0.1);color:var(--gold)">✓</div>Marketing automation</li>
+              <li><div class="fchk" style="background:rgba(245,158,11,0.1);color:var(--gold)">✓</div>Franchise/multi-branch</li>
+              <li><div class="fchk" style="background:rgba(245,158,11,0.1);color:var(--gold)">✓</div>Staff monitoring AI</li>
+              <li><div class="fchk" style="background:rgba(245,158,11,0.1);color:var(--gold)">✓</div>Advanced workflows</li>
+            </ul>
+            <button class="plan-btn e" onclick="showPaymentPage('AI Business OS','24999','year')">Contact for Setup →</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align:center;padding:20px 24px 50px;border-top:1px solid var(--border);">
+      <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:900;margin-bottom:6px;">FOMO by Prayag</div>
+      <div style="font-size:11px;color:var(--muted);letter-spacing:2px;">CREATE YOUR OWN FOMO</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════
+     PAYMENT PAGE
+══════════════════════════ -->
+<div class="page" id="paymentPage">
+  <div class="topbar">
+    <div class="logo">FOMO Platform</div>
+    <button class="tbtn" onclick="showPage('landingPage')">← Back</button>
+  </div>
+  <div class="scroll-area">
+    <div style="display:flex;justify-content:center;padding:24px;">
+      <div class="pay-box">
+        <div style="text-align:center;margin-bottom:20px;">
+          <span class="section-tag" id="payPlanTag">AI RECEPTIONIST</span>
+          <h2>Complete Payment</h2>
+          <p>Scan to pay and activate your business AI</p>
+          <div class="amount-badge">
+            <span style="font-size:13px;color:var(--muted)">Total:</span>
+            <span id="payAmt" style="font-family:'Syne',sans-serif;font-size:22px;font-weight:900;">₹1,999</span>
+            <span id="payPer" style="font-size:11px;color:var(--muted)">/month</span>
+          </div>
+        </div>
+
+        <div class="qr-box">
+          <div class="qr-img-wrap">
+            <img id="payQR" src="https://i.ibb.co/Mk6fB02g/image.jpg" alt="Pay Prayag" onerror="this.style.background='#fff';this.alt='QR Loading...'"/>
+          </div>
+          <div class="upi-id-box" id="upiBox" onclick="copyUPI()">9998090047@ybl</div>
+          <div style="font-size:10px;color:var(--muted);">Tap to copy UPI ID</div>
+        </div>
+
+        <div class="how-steps">
+          <div style="font-size:10px;color:var(--p);letter-spacing:2px;margin-bottom:12px;">HOW TO PAY</div>
+          <div class="how-step"><div class="step-num">1</div><div style="font-size:13px;color:var(--muted);">Open GPay, PhonePe, or Paytm</div></div>
+          <div class="how-step"><div class="step-num">2</div><div style="font-size:13px;color:var(--muted);">Scan QR code — amount auto-fills to <strong id="autoAmt" style="color:var(--text)">₹1,999</strong></div></div>
+          <div class="how-step"><div class="step-num">3</div><div style="font-size:13px;color:var(--muted);">Confirm payment</div></div>
+          <div class="how-step"><div class="step-num">4</div><div style="font-size:13px;color:var(--muted);">Screenshot & WhatsApp to Prayag</div></div>
+        </div>
+
+        <a id="waLink" href="https://wa.me/919998090047" target="_blank" class="wa-btn">
+          <span style="font-size:20px">💬</span> Send Payment Screenshot to Prayag
+        </a>
+
+        <button class="paid-btn" onclick="enterActivationCode()">I Have Paid — Activate My Account →</button>
+        <p style="font-size:11px;color:var(--muted);text-align:center;margin-top:10px;">Prayag will activate within 24 hours after verification</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════
+     SETUP PAGE
+══════════════════════════ -->
+<div class="page" id="setupPage">
+  <div class="topbar">
+    <div class="logo">FOMO Platform</div>
+    <button class="tbtn" onclick="showPage('landingPage')">← Back</button>
+  </div>
+  <div class="scroll-area">
+    <div class="setup-box">
+      <div style="text-align:center;margin-bottom:28px;">
+        <span class="section-tag" id="setupPlanTag">SETTING UP YOUR AI</span>
+        <h2 style="font-family:'Syne',sans-serif;font-size:28px;font-weight:900;margin-bottom:8px;">Setup Your Business</h2>
+        <p style="font-size:13px;color:var(--muted);">Fill your details once — your AI-powered store is ready!</p>
+      </div>
+
+      <div class="card" style="margin-bottom:20px;">
+        <div style="font-size:10px;color:var(--p);letter-spacing:2px;margin-bottom:12px;">🔑 API KEY (ADMIN ONLY)</div>
+        <input type="password" id="setupApiKey" placeholder="sk-ant-api03-..." autocomplete="off"/>
+        <div style="font-size:10px;color:var(--muted);margin-top:6px;">Get at <a href="https://console.anthropic.com" target="_blank" style="color:var(--p);">console.anthropic.com</a></div>
+      </div>
+
+      <div class="card" style="margin-bottom:20px;">
+        <div style="font-size:10px;color:var(--p);letter-spacing:2px;margin-bottom:14px;">BUSINESS INFO</div>
+        <div class="form-grid">
+          <div class="field"><label>Business Name *</label><input id="su_name" placeholder="e.g. Raj's Cafe"/></div>
+          <div class="field"><label>Business Type *</label>
+            <select id="su_type">
+              <option value="">Select...</option>
+              <option>Restaurant / Cafe</option><option>Grocery Store</option>
+              <option>Hotel / Stay</option><option>Clothing Store</option>
+              <option>Electronics Shop</option><option>Salon / Parlour</option>
+              <option>Gym / Fitness</option><option>Medical / Pharmacy</option>
+              <option>Bakery</option><option>Other</option>
+            </select>
+          </div>
+          <div class="field"><label>Owner Name</label><input id="su_owner" placeholder="e.g. Raj Sharma"/></div>
+          <div class="field"><label>Location</label><input id="su_loc" placeholder="e.g. Surat, Gujarat"/></div>
+          <div class="field"><label>Phone / WhatsApp</label><input id="su_phone" placeholder="e.g. 9876543210"/></div>
+          <div class="field"><label>Tagline (optional)</label><input id="su_tag" placeholder="e.g. Taste the difference"/></div>
+          <div class="field form-full"><label>Business Description</label><textarea id="su_desc" placeholder="Tell customers about your business..." style="min-height:70px;"></textarea></div>
+        </div>
+      </div>
+
+      <button class="btn primary" style="width:100%;padding:15px;font-size:15px;" onclick="launchBusiness()">⚡ Launch My Business AI</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════
+     DASHBOARD PAGE
+══════════════════════════ -->
+<div class="page" id="dashPage">
+  <div class="topbar">
+    <div class="logo" id="dashLogo">FOMO Platform</div>
+    <div style="display:flex;gap:8px;">
+      <button class="tbtn" id="viewStoreBtn" onclick="openStore()">👁️ View Store</button>
+      <button class="tbtn" id="viewCartBtn" onclick="showPage('cartPage')" style="position:relative">🛒 Cart <span class="cart-count" id="cartCount">0</span></button>
+    </div>
+  </div>
+  <div class="dash-layout">
+    <div class="dash-sidebar">
+      <div class="side-label">MENU</div>
+      <div class="side-item active" onclick="switchTab('overview')" id="tab-overview"><span>📊</span> Overview</div>
+      <div class="side-item" onclick="switchTab('products')" id="tab-products"><span>📦</span> Products</div>
+      <div class="side-item" onclick="switchTab('orders')" id="tab-orders"><span>🛍️</span> Orders</div>
+      <div class="side-item" onclick="switchTab('addprod')" id="tab-addprod"><span>➕</span> Add Product</div>
+      <div class="side-label" style="margin-top:16px;">STORE</div>
+      <div class="side-item" onclick="openStore()"><span>👁️</span> View Store</div>
+      <div class="side-label" style="margin-top:16px;">ACCOUNT</div>
+      <div class="side-item" onclick="showPage('landingPage')"><span>🏠</span> Home</div>
+    </div>
+    <div class="dash-content" id="dashContent"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════
+     STORE PAGE
+══════════════════════════ -->
+<div class="page" id="storePage">
+  <div class="topbar">
+    <div class="logo" id="storeLogo">Store</div>
+    <div style="display:flex;gap:8px;">
+      <button class="tbtn" onclick="showPage('dashPage')">Dashboard</button>
+      <button class="tbtn cart-btn" onclick="showPage('cartPage')">🛒 Cart <span class="cart-count" id="storeCartCount">0</span></button>
+    </div>
+  </div>
+  <div class="scroll-area">
+    <div class="store-hero">
+      <div class="store-name" id="storeNameDisplay">Business Store</div>
+      <div class="store-type" id="storeTypeDisplay">YOUR AI-POWERED STORE</div>
+    </div>
+    <div class="store-cats" id="storeCats"></div>
+    <div class="store-products">
+      <div class="store-grid" id="storeGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════
+     PRODUCT DETAIL PAGE
+══════════════════════════ -->
+<div class="page" id="productPage">
+  <div class="topbar">
+    <div class="logo" id="prodStoreName">Store</div>
+    <div style="display:flex;gap:8px;">
+      <button class="tbtn" onclick="showPage('storePage');renderStore()">← Store</button>
+      <button class="tbtn cart-btn" onclick="showPage('cartPage')">🛒 <span class="cart-count" id="prodCartCount">0</span></button>
+    </div>
+  </div>
+  <div class="scroll-area">
+    <div class="product-hero" id="productHero"></div>
+    <!-- AI PANEL -->
+    <div class="ai-panel" id="aiPanel">
+      <div class="ai-panel-header">
+        <div class="ai-panel-title">✦ AI Product Assistant <span id="aiProdName" style="color:var(--p2);font-size:12px;"></span></div>
+        <button onclick="toggleAI()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:18px;">×</button>
+      </div>
+      <div class="ai-msgs" id="aiMsgs"></div>
+      <div class="ai-input-row">
+        <input class="ai-input" id="aiInput" placeholder="Ask about this product..." onkeydown="if(event.key==='Enter')sendAI()"/>
+        <button class="ai-send" onclick="sendAI()">➤</button>
+      </div>
+    </div>
+    <!-- RELATED PRODUCTS -->
+    <div style="padding:0 24px 30px;">
+      <h3 style="font-family:'Syne',sans-serif;font-size:16px;font-weight:800;margin-bottom:14px;">More Products</h3>
+      <div class="store-grid" id="relatedGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════
+     CART PAGE
+══════════════════════════ -->
+<div class="page" id="cartPage">
+  <div class="topbar">
+    <div class="logo">Cart</div>
+    <button class="tbtn" onclick="showPage('storePage');renderStore()">← Continue Shopping</button>
+  </div>
+  <div class="scroll-area">
+    <div class="cart-items" id="cartItems"></div>
+    <div id="cartSummary"></div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+// GLOBAL STATE
+// ══════════════════════════════════════════
+let API_KEY = '';
+let bizInfo = {};
+let products = [];
+let cart = [];
+let orders = [];
+let currentProduct = null;
+let selectedPlan = {};
+let aiHistory = [];
+let currentDashTab = 'overview';
+
+const MY_UPI = '9998090047@ybl';
+const MY_WA  = '919998090047';
+const ACT_CODE = 'FOMO2024';
+
+// ══════════════════════════════════════════
+// PAGE SYSTEM
+// ══════════════════════════════════════════
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+function scrollTo(id) {
+  document.getElementById(id)?.scrollIntoView({behavior:'smooth'});
+}
+
+// ══════════════════════════════════════════
+// PAYMENT
+// ══════════════════════════════════════════
+function showPaymentPage(plan, amount, period) {
+  selectedPlan = {name:plan, amount:amount, period:period};
+  document.getElementById('payPlanTag').textContent = plan.toUpperCase();
+  document.getElementById('payAmt').textContent = '₹' + Number(amount).toLocaleString('en-IN');
+  document.getElementById('payPer').textContent = '/'+period;
+  document.getElementById('autoAmt').textContent = '₹' + Number(amount).toLocaleString('en-IN');
+  const msg = encodeURIComponent('Hi Prayag! I paid ₹'+amount+' for '+plan+'. Screenshot attached!');
+  document.getElementById('waLink').href = 'https://wa.me/'+MY_WA+'?text='+msg;
+  showPage('paymentPage');
+}
+
+function copyUPI() {
+  navigator.clipboard.writeText(MY_UPI).then(() => {
+    const el = document.getElementById('upiBox');
+    const orig = el.textContent;
+    el.textContent = '✓ Copied!';
+    el.style.color = '#22c55e';
+    setTimeout(() => { el.textContent = orig; el.style.color=''; }, 2000);
+  });
+}
+
+function enterActivationCode() {
+  const code = prompt('Enter your activation code\n(Prayag sends this after payment):');
+  if (!code) return;
+  if (code.toUpperCase() === ACT_CODE) {
+    showPage('setupPage');
+    document.getElementById('setupPlanTag').textContent = 'SETTING UP: ' + selectedPlan.name;
+    toast('✓ Code verified! Set up your business 🎉');
+  } else {
+    alert('Wrong code. Please send payment screenshot to Prayag on WhatsApp and wait for your code.');
+  }
+}
+
+// ══════════════════════════════════════════
+// BUSINESS SETUP
+// ══════════════════════════════════════════
+function launchBusiness() {
+  const apiKey = document.getElementById('setupApiKey').value.trim();
+  const name   = document.getElementById('su_name').value.trim();
+  const type   = document.getElementById('su_type').value;
+  if (!name) { alert('Please enter your business name!'); return; }
+  if (!type) { alert('Please select business type!'); return; }
+  if (!apiKey){ alert('Please enter your API key!'); return; }
+
+  API_KEY = apiKey;
+  bizInfo = {
+    name:  name, type: type,
+    owner: document.getElementById('su_owner').value.trim(),
+    loc:   document.getElementById('su_loc').value.trim(),
+    phone: document.getElementById('su_phone').value.trim(),
+    tag:   document.getElementById('su_tag').value.trim(),
+    desc:  document.getElementById('su_desc').value.trim(),
+    plan:  selectedPlan.name || 'AI Receptionist'
+  };
+
+  document.getElementById('dashLogo').textContent = bizInfo.name;
+  document.getElementById('storeLogo').textContent = bizInfo.name;
+  document.getElementById('prodStoreName').textContent = bizInfo.name;
+  document.getElementById('storeNameDisplay').textContent = bizInfo.name;
+  document.getElementById('storeTypeDisplay').textContent = bizInfo.type.toUpperCase() + ' · AI-POWERED STORE';
+  document.title = bizInfo.name + ' — FOMO Platform';
+
+  // Add sample products for demo
+  if (products.length === 0) {
+    products = [
+      {id:1,name:'Sample Product',price:299,cat:'General',desc:'This is a sample product. Edit or delete it from the dashboard.',emoji:'📦',img:''},
+    ];
+  }
+
+  showPage('dashPage');
+  initDash();
+  toast('Welcome to ' + bizInfo.name + '! 🎉');
+}
+
+function initDash() {
+  switchTab('overview');
+}
+
+// ══════════════════════════════════════════
+// DASHBOARD TABS
+// ══════════════════════════════════════════
+function switchTab(tab) {
+  currentDashTab = tab;
+  document.querySelectorAll('.side-item').forEach(el => el.classList.remove('active'));
+  const el = document.getElementById('tab-'+tab);
+  if (el) el.classList.add('active');
+
+  const dc = document.getElementById('dashContent');
+  if (tab === 'overview')  dc.innerHTML = renderOverview();
+  if (tab === 'products')  dc.innerHTML = renderDashProducts();
+  if (tab === 'orders')    dc.innerHTML = renderOrders();
+  if (tab === 'addprod')   dc.innerHTML = renderAddProduct();
+  updateCartBadges();
+}
+
+function renderOverview() {
+  const revenue = orders.reduce((s,o) => s + o.total, 0);
+  return `
+    <div class="sec-header"><h2>Welcome back${bizInfo.name ? ', '+bizInfo.name : ''}! 👋</h2></div>
+    <div class="dash-grid">
+      <div class="dash-stat"><div class="ds-icon">📦</div><div class="ds-num">${products.length}</div><div class="ds-label">Total Products</div></div>
+      <div class="dash-stat"><div class="ds-icon">🛍️</div><div class="ds-num">${orders.length}</div><div class="ds-label">Total Orders</div></div>
+      <div class="dash-stat"><div class="ds-icon">💰</div><div class="ds-num">₹${revenue.toLocaleString('en-IN')}</div><div class="ds-label">Revenue</div></div>
+      <div class="dash-stat"><div class="ds-icon">🛒</div><div class="ds-num">${cart.length}</div><div class="ds-label">Items in Cart</div></div>
+    </div>
+    <div class="sec-header" style="margin-top:8px;"><h2>Quick Actions</h2></div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:24px;">
+      <button class="btn primary" onclick="switchTab('addprod')">➕ Add Product</button>
+      <button class="btn ghost" onclick="openStore()">👁️ View Store</button>
+      <button class="btn ghost" onclick="switchTab('orders')">🛍️ Orders</button>
+    </div>
+    <div class="sec-header"><h2>Recent Products</h2></div>
+    <div class="prod-grid">${products.slice(-6).map(prodCardHTML).join('') || '<div style="color:var(--muted);font-size:14px;">No products yet. <span style="color:var(--p);cursor:pointer;" onclick="switchTab(\'addprod\')">Add your first product →</span></div>'}</div>`;
+}
+
+function renderDashProducts() {
+  return `
+    <div class="sec-header">
+      <h2>All Products (${products.length})</h2>
+      <button class="btn primary" onclick="switchTab('addprod')">➕ Add Product</button>
+    </div>
+    <div class="prod-grid">${products.map(prodCardHTML).join('') || '<div style="color:var(--muted);font-size:14px;">No products yet.</div>'}</div>`;
+}
+
+function prodCardHTML(p) {
+  return `<div class="prod-card">
+    ${p.img ? `<img class="prod-img" src="${p.img}" alt="${p.name}" onerror="this.style.display='none'"/>` : `<div class="prod-img-placeholder">${p.emoji||'📦'}</div>`}
+    <div class="prod-info">
+      <div class="prod-name">${p.name}</div>
+      <div class="prod-cat">${p.cat}</div>
+      <div class="prod-price">₹${Number(p.price).toLocaleString('en-IN')}</div>
+      <div class="prod-actions">
+        <button style="background:rgba(155,48,255,0.12);color:var(--p2);" onclick="editProduct(${p.id})">Edit</button>
+        <button style="background:rgba(239,68,68,0.1);color:#ef4444;" onclick="deleteProduct(${p.id})">Delete</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderAddProduct() {
+  return `
+    <div class="sec-header"><h2>Add New Product</h2></div>
+    <div class="prod-form">
+      <div class="form-grid">
+        <div class="field"><label>Product Name *</label><input id="pn" placeholder="e.g. Butter Chicken"/></div>
+        <div class="field"><label>Price (₹) *</label><input id="pp" type="number" placeholder="e.g. 299"/></div>
+        <div class="field"><label>Category *</label><input id="pc" placeholder="e.g. Main Course, Electronics..."/></div>
+        <div class="field"><label>Emoji Icon</label><input id="pe" placeholder="e.g. 🍛" maxlength="4"/></div>
+        <div class="field form-full"><label>Description</label><textarea id="pd" placeholder="Describe this product in detail — ingredients, features, usage, warranty, etc." style="min-height:80px;"></textarea></div>
+        <div class="field form-full"><label>Image URL (optional)</label><input id="pi" placeholder="https://... paste any image URL"/></div>
+        <div class="field form-full"><label>Additional Info (for AI assistant)</label><textarea id="pa" placeholder="Any extra details, specifications, comparisons, recommendations the AI should know about this product..." style="min-height:70px;"></textarea></div>
+      </div>
+      <button class="btn primary" style="margin-top:16px;width:100%;padding:14px;" onclick="addProduct()">Add Product</button>
+    </div>`;
+}
+
+function renderOrders() {
+  if (orders.length === 0) return `<div class="sec-header"><h2>Orders</h2></div><div style="color:var(--muted);font-size:14px;text-align:center;padding:40px;">No orders yet. Share your store link with customers!</div>`;
+  return `
+    <div class="sec-header"><h2>Orders (${orders.length})</h2></div>
+    <div class="orders-list">
+      ${orders.map(o => `
+        <div class="order-card">
+          <div class="order-header">
+            <div class="order-id">#${o.id}</div>
+            <span class="badge green">Received</span>
+          </div>
+          <div class="order-items-preview">${o.items.map(i=>i.name+'×'+i.qty).join(', ')}</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
+            <div style="font-size:12px;color:var(--muted);">${o.date}</div>
+            <div class="order-total">₹${o.total.toLocaleString('en-IN')}</div>
+          </div>
+        </div>`).join('')}
+    </div>`;
+}
+
+// ══════════════════════════════════════════
+// PRODUCT MANAGEMENT
+// ══════════════════════════════════════════
+function addProduct() {
+  const name = document.getElementById('pn').value.trim();
+  const price = document.getElementById('pp').value;
+  const cat   = document.getElementById('pc').value.trim();
+  if (!name || !price || !cat) { toast('⚠️ Please fill name, price, and category!'); return; }
+
+  const prod = {
+    id: Date.now(),
+    name, price: Number(price),
+    cat, emoji: document.getElementById('pe').value||'📦',
+    desc: document.getElementById('pd').value.trim(),
+    img: document.getElementById('pi').value.trim(),
+    extra: document.getElementById('pa').value.trim()
+  };
+  products.push(prod);
+  toast('✓ Product added: '+name);
+  switchTab('products');
+}
+
+function deleteProduct(id) {
+  if (!confirm('Delete this product?')) return;
+  products = products.filter(p => p.id !== id);
+  switchTab(currentDashTab);
+  toast('Product deleted');
+}
+
+function editProduct(id) {
+  const p = products.find(x => x.id === id);
+  if (!p) return;
+  const dc = document.getElementById('dashContent');
+  dc.innerHTML = `
+    <div class="sec-header"><h2>Edit Product</h2></div>
+    <div class="prod-form">
+      <div class="form-grid">
+        <div class="field"><label>Product Name *</label><input id="epn" value="${p.name}"/></div>
+        <div class="field"><label>Price (₹) *</label><input id="epp" type="number" value="${p.price}"/></div>
+        <div class="field"><label>Category *</label><input id="epc" value="${p.cat}"/></div>
+        <div class="field"><label>Emoji</label><input id="epe" value="${p.emoji}" maxlength="4"/></div>
+        <div class="field form-full"><label>Description</label><textarea id="epd" style="min-height:80px;">${p.desc}</textarea></div>
+        <div class="field form-full"><label>Image URL</label><input id="epi" value="${p.img}"/></div>
+        <div class="field form-full"><label>Additional AI Info</label><textarea id="epa" style="min-height:70px;">${p.extra||''}</textarea></div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:16px;">
+        <button class="btn primary" style="flex:1;padding:13px;" onclick="saveEdit(${id})">Save Changes</button>
+        <button class="btn ghost" onclick="switchTab('products')">Cancel</button>
+      </div>
+    </div>`;
+}
+
+function saveEdit(id) {
+  const p = products.find(x => x.id === id);
+  if (!p) return;
+  p.name  = document.getElementById('epn').value.trim();
+  p.price = Number(document.getElementById('epp').value);
+  p.cat   = document.getElementById('epc').value.trim();
+  p.emoji = document.getElementById('epe').value||'📦';
+  p.desc  = document.getElementById('epd').value.trim();
+  p.img   = document.getElementById('epi').value.trim();
+  p.extra = document.getElementById('epa').value.trim();
+  toast('✓ Product updated!');
+  switchTab('products');
+}
+
+// ══════════════════════════════════════════
+// STORE
+// ══════════════════════════════════════════
+function openStore() {
+  renderStore();
+  showPage('storePage');
+}
+
+function renderStore(filterCat) {
+  // Categories
+  const cats = ['All', ...new Set(products.map(p=>p.cat))];
+  document.getElementById('storeCats').innerHTML = cats.map(c =>
+    `<div class="cat-pill${(!filterCat&&c==='All')||(filterCat===c)?' active':''}" onclick="renderStore('${c==='All'?'':c}')">${c}</div>`
+  ).join('');
+
+  const filtered = filterCat ? products.filter(p=>p.cat===filterCat) : products;
+  document.getElementById('storeGrid').innerHTML = filtered.length
+    ? filtered.map(p => `
+        <div class="store-card" onclick="openProduct(${p.id})">
+          ${p.img ? `<img class="store-card-img" src="${p.img}" alt="${p.name}" onerror="this.outerHTML='<div class=store-card-img-ph>${p.emoji||'📦'}</div>'"/>` : `<div class="store-card-img-ph">${p.emoji||'📦'}</div>`}
+          <div class="store-card-info">
+            <div class="store-card-name">${p.name}</div>
+            <div class="store-card-cat">${p.cat}</div>
+            <div class="store-card-price">₹${Number(p.price).toLocaleString('en-IN')}</div>
+          </div>
+        </div>`).join('')
+    : '<div style="color:var(--muted);font-size:14px;grid-column:1/-1;text-align:center;padding:40px;">No products in this category</div>';
+  updateCartBadges();
+}
+
+// ══════════════════════════════════════════
+// PRODUCT DETAIL + AI
+// ══════════════════════════════════════════
+function openProduct(id) {
+  const p = products.find(x => x.id === id);
+  if (!p) return;
+  currentProduct = p;
+  aiHistory = [];
+
+  document.getElementById('aiPanel').classList.remove('open');
+  document.getElementById('aiMsgs').innerHTML = '';
+  document.getElementById('aiProdName').textContent = '— ' + p.name;
+
+  document.getElementById('productHero').innerHTML = `
+    <div class="product-img-box">
+      ${p.img ? `<img src="${p.img}" alt="${p.name}" onerror="this.outerHTML='<div class=product-img-ph>${p.emoji||'📦'}</div>'"/>` : `<div class="product-img-ph">${p.emoji||'📦'}</div>`}
+    </div>
+    <div class="product-details">
+      <div class="product-cat">${p.cat}</div>
+      <div class="product-name">${p.name}</div>
+      <div class="product-price">₹${Number(p.price).toLocaleString('en-IN')}</div>
+      <div class="product-desc">${p.desc || 'Premium quality product.'}</div>
+      <div class="product-btns">
+        <button class="btn-buy" onclick="buyNow(${p.id})">⚡ Buy Now</button>
+        <button class="btn-cart" onclick="addToCart(${p.id});event.stopPropagation()">🛒 Add to Cart</button>
+        <button class="btn-ai" onclick="toggleAI()">✦ Let's Know This Product</button>
+      </div>
+    </div>`;
+
+  // Related products
+  const related = products.filter(x => x.id !== id && x.cat === p.cat).slice(0,4);
+  document.getElementById('relatedGrid').innerHTML = related.map(r => `
+    <div class="store-card" onclick="openProduct(${r.id})">
+      ${r.img ? `<img class="store-card-img" src="${r.img}" alt="${r.name}"/>` : `<div class="store-card-img-ph">${r.emoji||'📦'}</div>`}
+      <div class="store-card-info">
+        <div class="store-card-name">${r.name}</div>
+        <div class="store-card-price">₹${Number(r.price).toLocaleString('en-IN')}</div>
+      </div>
+    </div>`).join('');
+
+  showPage('productPage');
+  updateCartBadges();
+}
+
+function toggleAI() {
+  const panel = document.getElementById('aiPanel');
+  if (panel.classList.contains('open')) {
+    panel.classList.remove('open');
+  } else {
+    panel.classList.add('open');
+    if (aiHistory.length === 0) {
+      // Welcome message
+      addAIMsg('ai', 'Hi! I am the AI assistant for "' + currentProduct.name + '". Ask me anything about this product — features, quality, usage, ingredients, comparison, or recommendations!');
+    }
+  }
+}
+
+function addAIMsg(role, text) {
+  const msgs = document.getElementById('aiMsgs');
+  const wrap = document.createElement('div');
+  wrap.className = 'ai-msg ' + role;
+  const av = document.createElement('div');
+  av.className = 'ai-av';
+  av.textContent = role==='ai' ? '✦' : '👤';
+  const bubble = document.createElement('div');
+  bubble.className = 'ai-bubble';
+  bubble.textContent = text;
+  wrap.appendChild(av); wrap.appendChild(bubble);
+  msgs.appendChild(wrap);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function addAITyping() {
+  const msgs = document.getElementById('aiMsgs');
+  const wrap = document.createElement('div');
+  wrap.className='ai-msg ai'; wrap.id='aiTyping';
+  const av=document.createElement('div'); av.className='ai-av'; av.textContent='✦';
+  const b=document.createElement('div'); b.className='ai-bubble';
+  b.innerHTML='<div class="typing-dots"><span></span><span></span><span></span></div>';
+  wrap.appendChild(av); wrap.appendChild(b);
+  msgs.appendChild(wrap);
+  msgs.scrollTop=msgs.scrollHeight;
+}
+
+async function sendAI() {
+  const input = document.getElementById('aiInput');
+  const text = input.value.trim();
+  if (!text || !currentProduct) return;
+  input.value = '';
+
+  addAIMsg('user', text);
+  aiHistory.push({role:'user', content:text});
+  addAITyping();
+
+  const p = currentProduct;
+  const system = `You are the AI product assistant for "${p.name}".
+Product Details:
+- Name: ${p.name}
+- Category: ${p.cat}
+- Price: ₹${p.price}
+- Description: ${p.desc}
+- Additional Info: ${p.extra || 'N/A'}
+- Business: ${bizInfo.name || 'Our Store'}
+
+Your ONLY job is to answer questions about THIS specific product.
+Answer questions about: features, quality, usage, ingredients, specifications, warranty, comparisons, recommendations.
+Keep answers SHORT — max 3 sentences. No markdown. Plain text only.
+If asked something unrelated to this product, say "I can only answer questions about ${p.name}."`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:200,system,messages:aiHistory})
+    });
+    const data = await res.json();
+    document.getElementById('aiTyping')?.remove();
+    if (data.error) { addAIMsg('ai', 'Error: '+data.error.message); return; }
+    const reply = data.content[0].text.replace(/\*\*(.+?)\*\*/g,'$1').replace(/\*(.+?)\*/g,'$1').trim();
+    aiHistory.push({role:'assistant',content:reply});
+    addAIMsg('ai', reply);
+  } catch(e) {
+    document.getElementById('aiTyping')?.remove();
+    addAIMsg('ai', 'Please add your API key in setup to use AI assistant!');
+  }
+}
+
+// ══════════════════════════════════════════
+// CART
+// ══════════════════════════════════════════
+function addToCart(id) {
+  const p = products.find(x => x.id === id);
+  if (!p) return;
+  const existing = cart.find(c => c.id === id);
+  if (existing) existing.qty++;
+  else cart.push({...p, qty:1});
+  updateCartBadges();
+  toast('✓ '+p.name+' added to cart!');
+}
+
+function buyNow(id) {
+  addToCart(id);
+  showPage('cartPage');
+  renderCart();
+}
+
+function updateCartBadges() {
+  const count = cart.reduce((s,c) => s+c.qty, 0);
+  document.querySelectorAll('#cartCount,#storeCartCount,#prodCartCount').forEach(el => el.textContent = count);
+}
+
+function renderCart() {
+  const ci = document.getElementById('cartItems');
+  if (cart.length === 0) {
+    ci.innerHTML = '<div style="text-align:center;padding:60px;color:var(--muted);">Your cart is empty.<br/><button class="btn ghost" style="margin-top:16px;" onclick="showPage(\'storePage\');renderStore()">Browse Products</button></div>';
+    document.getElementById('cartSummary').innerHTML = '';
+    return;
+  }
+
+  ci.innerHTML = cart.map(item => `
+    <div class="cart-item">
+      ${item.img ? `<img class="ci-img" src="${item.img}" alt="${item.name}" onerror="this.outerHTML='<div class=ci-img-ph>${item.emoji||'📦'}</div>'"/>` : `<div class="ci-img-ph">${item.emoji||'📦'}</div>`}
+      <div class="ci-info">
+        <div class="ci-name">${item.name}</div>
+        <div class="ci-price">₹${Number(item.price).toLocaleString('en-IN')} each</div>
+        <div class="ci-qty">
+          <button class="qty-btn" onclick="changeQty(${item.id},-1)">−</button>
+          <span class="qty-val">${item.qty}</span>
+          <button class="qty-btn" onclick="changeQty(${item.id},1)">+</button>
+          <button class="ci-del" onclick="removeFromCart(${item.id})">Remove</button>
+        </div>
+      </div>
+      <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:900;color:var(--p2);flex-shrink:0;">₹${(item.price*item.qty).toLocaleString('en-IN')}</div>
+    </div>`).join('');
+
+  const subtotal = cart.reduce((s,c) => s + c.price*c.qty, 0);
+  const delivery = subtotal > 500 ? 0 : 40;
+  const total    = subtotal + delivery;
+
+  document.getElementById('cartSummary').innerHTML = `
+    <div class="order-summary">
+      <div class="sec-header"><h2>Order Summary</h2></div>
+      <div class="summary-row"><span>Subtotal</span><span>₹${subtotal.toLocaleString('en-IN')}</span></div>
+      <div class="summary-row"><span>Delivery</span><span>${delivery === 0 ? '<span style="color:var(--green)">FREE</span>' : '₹'+delivery}</span></div>
+      <div class="summary-row total"><span>Total</span><span>₹${total.toLocaleString('en-IN')}</span></div>
+      <button class="btn primary" style="width:100%;margin-top:16px;padding:15px;font-size:15px;" onclick="placeOrder(${total})">Place Order — ₹${total.toLocaleString('en-IN')}</button>
+    </div>`;
+  updateCartBadges();
+}
+
+function changeQty(id, delta) {
+  const item = cart.find(c => c.id === id);
+  if (!item) return;
+  item.qty += delta;
+  if (item.qty <= 0) removeFromCart(id);
+  else { renderCart(); updateCartBadges(); }
+}
+
+function removeFromCart(id) {
+  cart = cart.filter(c => c.id !== id);
+  renderCart();
+  updateCartBadges();
+}
+
+function placeOrder(total) {
+  const order = {
+    id: 'ORD' + Date.now(),
+    items: cart.map(c => ({name:c.name,qty:c.qty,price:c.price})),
+    total,
+    date: new Date().toLocaleString('en-IN')
+  };
+  orders.push(order);
+  cart = [];
+  renderCart();
+  updateCartBadges();
+  toast('🎉 Order placed successfully!');
+  showPage('dashPage');
+  switchTab('orders');
+}
+
+// ══════════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════════
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// Init cart render when cart page opens
+document.getElementById('cartPage').addEventListener('transitionend', () => {});
+const origShowPage = showPage;
+window.showPage = function(id) {
+  origShowPage(id);
+  if (id === 'cartPage') renderCart();
+};
+</script>
+</body>
+</html>
